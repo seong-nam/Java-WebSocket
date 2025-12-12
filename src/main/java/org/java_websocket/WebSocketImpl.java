@@ -424,7 +424,7 @@ public class WebSocketImpl implements WebSocket {
    * @param exception the InvalidDataException causing this problem
    */
   private void closeConnectionDueToWrongHandshake(InvalidDataException exception) {
-    write(generateHttpResponseDueToError(404));
+    write(generateHttpResponseDueToError(exception.getCloseCode()));
     flushAndClose(exception.getCloseCode(), exception.getMessage(), false);
   }
 
@@ -447,6 +447,9 @@ public class WebSocketImpl implements WebSocket {
   private ByteBuffer generateHttpResponseDueToError(int errorCode) {
     String errorCodeDescription;
     switch (errorCode) {
+      case 401:
+        errorCodeDescription = "401 Unauthorized";
+        break;
       case 404:
         errorCodeDescription = "404 WebSocket Upgrade Failure";
         break;
